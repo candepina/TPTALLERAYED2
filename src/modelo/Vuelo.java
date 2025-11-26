@@ -21,10 +21,10 @@ public class Vuelo {
     public List<String> asientos_disponibles_A = new ArrayList<>(Arrays.asList("A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"));
     public List<String> asientos_disponibles_B = new ArrayList<>(Arrays.asList("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"));
     public List<String> asientos_disponibles_C = new ArrayList<>(Arrays.asList("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"));
-    public ArbolAVL reservas = new ArbolAVL();
+    public  ArbolAVL reservas = new ArbolAVL(); //creamos el árbol AVL reservas con los códigos de asiento
     Random random = new Random();
 
-    public String reservar() throws Exception {
+    public String reservar() throws Exception  {
         int minimo = Math.min(ocupacion_seccion_A, Math.min(ocupacion_seccion_B, ocupacion_seccion_C));
         List<Character> seccionesPosibles = new ArrayList<>();
         if (ocupacion_seccion_A == minimo && ocupacion_seccion_A < 10) {
@@ -40,6 +40,7 @@ public class Vuelo {
 
         if (seccionesPosibles.isEmpty()) {
             throw new Exception("Avión lleno, no hay asientos disponibles");
+            
         }
         char seccionElegida = seccionesPosibles.get(random.nextInt(seccionesPosibles.size()));
 

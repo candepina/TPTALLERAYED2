@@ -178,7 +178,10 @@ public class ServicioRutas {
 
     }
 
-    public void mostrarDetallesFinal(String partida, String destino, Vuelo vuelo) {
+    public void mostrarDetallesFinal(String partida, String destino, Vuelo vuelo, int pasajeros) {
+        if(pasajeros>30){
+            pasajeros=30;
+        }
         System.out.println("Detalles finales del vuelo: ");
         //Calcular costo base del vuelo
         grafoCosto.dijkstra(partida);
@@ -208,8 +211,9 @@ public class ServicioRutas {
         if (vuelo.calcularOcupacion() >= 95) {
             System.out.println("El vuelo está ocupado a más del 95%. Se aplica un recargo de: $" + precioBase * 0.10);
         }
-        System.out.println("Precio final de su vuelo: $" + precioFinal);
-
+        System.out.println("Precio final de su vuelo: $" + precioFinal +" por persona.");
+        System.out.println("El precio final por "+pasajeros+" pasajeros es: $"+precioFinal*pasajeros);
+        
     }
 
 }

@@ -10,7 +10,8 @@ package estructuras;
  * @author cande
  */
 public class Nodo {
-   private String info;
+
+    private String info;
     private Nodo izq, der;
     private int altura;
 
@@ -49,5 +50,10 @@ public class Nodo {
         int alturaIzq = (izq != null) ? izq.getAltura() : 0;
         int alturaDer = (der != null) ? der.getAltura() : 0;
         this.altura = Math.max(alturaIzq, alturaDer) + 1;
-    }  
+    }
+
+    @Override
+    public String toString() {
+        return "Nodo(" + info + ")";
+    }
 }

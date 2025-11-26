@@ -43,6 +43,7 @@ public class SistemaDeVuelos {
         String destino;
         Scanner entrada = new Scanner(System.in);
         System.out.println("Ingrese ciudad de partida");
+        System.out.println("Opciones:\n * BSAS\n * Cordoba\n * Mendoza\n * Bariloche\n * Sta Fe\n * Posadas\n * Sta Cruz");
         partida = entrada.nextLine();
         switch (partida) {
             case "BSAS":
@@ -179,15 +180,30 @@ public class SistemaDeVuelos {
                 System.out.println("Sección B: " + vuelo.ocupacion_seccion_B);
                 System.out.println("Sección C: " + vuelo.ocupacion_seccion_C);
 
-                System.out.println("Reservas: ");
+                System.out.println("Los asientos asignados son: ");
                 vuelo.reservas.imprimirIn();
-                servicio.mostrarDetallesFinal(partida, destino, vuelo);
+                servicio.mostrarDetallesFinal(partida, destino, vuelo, cantidad_pasajeros);
+
                 break;
             case "No":
                 System.out.println("Reserva cancelada.");
                 break;
         }
 
+        System.out.println("Prueba de búsqueda");
+        System.out.println(vuelo.reservas.buscar("C1"));
+
+        System.out.println("Prueba de eliminación. Indicar asiento a eliminar: ");
+        String asiento_eliminar = entrada.next();
+        vuelo.reservas.eliminar(asiento_eliminar);
+        System.out.println("Asiento eliminado. El avión ahora se ve así: ");
+        vuelo.reservas.imprimirIn();
+
+        System.out.println("Prueba de DFS: ");
+        grafoCosto.DFS(partida);
+        
+        System.out.println("Prueba de BFS:");
+        grafoCosto.BFS(partida);
     }
 
 }
