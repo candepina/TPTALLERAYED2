@@ -6,6 +6,7 @@
 package sistemadevuelos;
 
 import estructuras.Grafo;
+import estructuras.Nodo;
 import java.util.Scanner;
 import modelo.Vuelo;
 import servicios.ServicioRutas;
@@ -164,6 +165,7 @@ public class SistemaDeVuelos {
 
         switch (confirmacion) {
             case "Si":
+                int codigo_vuelo=vuelo.asignarCodigoVuelo();
                 System.out.println("Ingrese la cantidad de pasajeros: ");
                 int cantidad_pasajeros = entrada.nextInt();
 
@@ -182,7 +184,7 @@ public class SistemaDeVuelos {
 
                 System.out.println("Los asientos asignados son: ");
                 vuelo.reservas.imprimirIn();
-                servicio.mostrarDetallesFinal(partida, destino, vuelo, cantidad_pasajeros);
+                servicio.mostrarDetallesFinal(partida, destino, vuelo, cantidad_pasajeros,codigo_vuelo);
 
                 break;
             case "No":
@@ -190,19 +192,33 @@ public class SistemaDeVuelos {
                 break;
         }
 
-        System.out.println("Prueba de búsqueda");
-        System.out.println(vuelo.reservas.buscar("C1"));
+        System.out.println("\nPrueba de búsqueda. Inserte asiento a buscar: ");
+        String asiento_buscar=entrada.next();
+        Nodo existe_buscar=vuelo.reservas.buscar(asiento_buscar);
+        if(existe_buscar!=null){
+            System.out.println("El asiento se encontró reservado.");
+            System.out.println(existe_buscar);
+        }else{
+            System.out.println("El asiento no se encontró reservado.");
+        }
 
-        System.out.println("Prueba de eliminación. Indicar asiento a eliminar: ");
+        System.out.println("\nPrueba de eliminación. Indicar asiento a eliminar: ");
         String asiento_eliminar = entrada.next();
-        vuelo.reservas.eliminar(asiento_eliminar);
-        System.out.println("Asiento eliminado. El avión ahora se ve así: ");
+
+        Nodo existe_eliminar = vuelo.reservas.buscar(asiento_eliminar);
+        if (existe_eliminar != null) {
+            vuelo.reservas.eliminar(asiento_eliminar);
+            System.out.println("Asiento " + asiento_eliminar + " eliminado correctamente.");
+        } else {
+            System.out.println("El asiento " + asiento_eliminar + " no se encontró reservado. No se puede eliminar.");
+        }
+        System.out.println("\nDisposición de asientos en el vuelo: ");
         vuelo.reservas.imprimirIn();
 
-        System.out.println("Prueba de DFS: ");
+        System.out.println("\nPrueba de DFS: ");
         grafoCosto.DFS(partida);
-        
-        System.out.println("Prueba de BFS:");
+
+        System.out.println("\nPrueba de BFS:");
         grafoCosto.BFS(partida);
     }
 

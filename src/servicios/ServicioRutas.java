@@ -178,7 +178,7 @@ public class ServicioRutas {
 
     }
 
-    public void mostrarDetallesFinal(String partida, String destino, Vuelo vuelo, int pasajeros) {
+    public void mostrarDetallesFinal(String partida, String destino, Vuelo vuelo, int pasajeros, int codigoVuelo) {
         if(pasajeros>30){
             pasajeros=30;
         }
@@ -198,6 +198,7 @@ public class ServicioRutas {
         double precioFinal = recargo(precioBase, vueloDirecto, vuelo);
 
         //mostrar informacion
+        System.out.println("Código de vuelo: "+codigoVuelo);
         System.out.println("Ciudad de partida: " + partida);
         System.out.println("Ciudad de destino: " + destino);
         System.out.println("Tiempo estimado de su vuelo: " + tiempoEstimado + " hs");

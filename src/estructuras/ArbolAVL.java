@@ -174,8 +174,8 @@ public class ArbolAVL {
         }
 
         //Método eliminar público
-        public Nodo eliminar(String x) {
-            return eliminar(x, this.raiz);
+        public void eliminar(String x) {
+            this.raiz = eliminar(x, this.raiz);
         }
 
         //Método rotación simple derecha

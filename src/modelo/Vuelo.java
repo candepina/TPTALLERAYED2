@@ -16,7 +16,7 @@ import java.util.Random;
  * @author cande
  */
 public class Vuelo {
-
+    public int codigo_vuelo;
     public int ocupacion_seccion_A = 0, ocupacion_seccion_B = 0, ocupacion_seccion_C = 0;
     public List<String> asientos_disponibles_A = new ArrayList<>(Arrays.asList("A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"));
     public List<String> asientos_disponibles_B = new ArrayList<>(Arrays.asList("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"));
@@ -69,5 +69,11 @@ public class Vuelo {
         int ocupacion_total = ocupacion_seccion_A + ocupacion_seccion_B + ocupacion_seccion_C;
         double porcentaje_ocupacion = (ocupacion_total * 100) / CAPACIDAD_TOTAL;
         return porcentaje_ocupacion;
+    }
+    
+    public int asignarCodigoVuelo(){
+        Random codigo = new Random();
+        codigo_vuelo=codigo.nextInt(100000);
+        return codigo_vuelo;
     }
 }
