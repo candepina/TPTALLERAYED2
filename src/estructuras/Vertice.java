@@ -18,7 +18,7 @@ public class Vertice implements Comparable<Vertice> {
 
         public String name; //nombre del vértice
         public List<Arista> adj; //vértices adyacentes
-        public double dist; //costo
+        public  double dist; //costo
         
         public Vertice prev;
 
@@ -28,7 +28,7 @@ public class Vertice implements Comparable<Vertice> {
             reset();
         }
 
-        public void reset() {
+        public  void reset() {
             dist = Grafo.INFINITY;
             
             prev = null;

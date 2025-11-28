@@ -9,6 +9,7 @@ import estructuras.Grafo;
 import estructuras.Vertice;
 import estructuras.Arista;
 import static estructuras.Grafo.INFINITY;
+import java.util.ArrayList;
 import modelo.Vuelo;
 
 /**
@@ -17,7 +18,7 @@ import modelo.Vuelo;
  */
 public class ServicioRutas {
 
-    private Grafo grafoCosto;
+    private static Grafo grafoCosto;
     private Grafo grafoTiempo;
 
     public ServicioRutas(Grafo grafoCosto, Grafo grafoTiempo) {
@@ -113,8 +114,28 @@ public class ServicioRutas {
         System.out.print(v.name);
     }
 
+    public ArrayList<String> obtenerCamino(String origen, String destino) {
+        ArrayList<String> camino = new ArrayList<>();
+
+        // Buscamos el vértice destino en el grafo
+        Vertice v = grafoCosto.getVertice(destino);
+
+        // Si no existe o no tiene camino, devolvemos lista vacía
+        if (v == null || v.dist == INFINITY) {
+            return camino;
+        }
+
+        // Reconstruimos el camino desde el destino hacia atrás usando prev
+        while (v != null) {
+            camino.add(0, v.name); // lo agregamos al inicio para que quede en orden
+            v = v.prev;
+        }
+
+        return camino;
+    }
+
     // Método para saber si hay vuelo directo entre origen y destino
-    public boolean esDirecto(String partida, String destino) {
+    public static boolean esDirecto(String partida, String destino) {
         Vertice v = grafoCosto.getVertice(partida);
         if (v == null) {
             System.out.println("La ciudad de partida es inválida"); // origen no existe
@@ -126,7 +147,7 @@ public class ServicioRutas {
                 return true;
             }
         }
-        System.out.println("No existe vuelo directo desde " + partida + " hasta " + destino + ". Requiere trasbordo\n"); // no hay vuelo directo
+        //System.out.println("No existe vuelo directo desde " + partida + " hasta " + destino + ". Requiere trasbordo\n"); // no hay vuelo directo
         return false;
     }
 
@@ -146,9 +167,9 @@ public class ServicioRutas {
 
     }
 
-    public void mostrarDetallesParcial(String partida, String destino) {
-        System.out.println("Detalles parciales de su vuelo: ");
-
+    public void mostrarDetallesParcial(ArrayList<Vuelo> vuelos) {
+        System.out.println("\nDETALLES PARCIALES DE SU(S) VUELO(S): \n");
+        /*
         //Calcular costo base del vuelo
         grafoCosto.dijkstra(partida);
         double precioBase = mostrarResultadoDijkstraParticularCosto(partida, destino);
@@ -162,7 +183,7 @@ public class ServicioRutas {
 
         double precioParcial = precioBase;
         if (vueloDirecto) {
-            precioParcial+= precioBase * 0.20;
+            precioParcial += precioBase * 0.20;
         }
 
         //mostrar informacion
@@ -170,17 +191,58 @@ public class ServicioRutas {
         System.out.println("Ciudad de destino: " + destino);
         System.out.println("Tiempo estimado de su vuelo: " + tiempoEstimado + " hs");
         if (vueloDirecto) {
-            System.out.println("El vuelo es directo. Se aplica un recargo de: $" + (precioBase*0.20));
+            System.out.println("El vuelo es directo. Se aplica un recargo de: $" + (precioBase * 0.20));
 
         }
         System.out.println("Precio parcial de su vuelo: $" + precioParcial);
-        
-
+         */
+        double total =0;
+        for (Vuelo v : vuelos) {
+            double costo = v.getPrecio();
+           
+            total=total+costo;
+            System.out.println("Tramo del vuelo:"+ v.getPartida()+" -> "+v.getDestino());
+            System.out.println("Código de vuelo: "+v.getCodigo_vuelo());
+            System.out.println("Duración estimada de vuelo: "+v.getDuracion()+"hs");
+             System.out.println("Precio parcial del vuelo (sin posibles recargos): $"+v.getPrecio()+"\n");
+        }
+        System.out.println("Precio total parcial (sin posibles recargos): $"+total);
     }
 
-    public void mostrarDetallesFinal(String partida, String destino, Vuelo vuelo, int pasajeros, int codigoVuelo) {
+    public void mostrarDetallesFinal(ArrayList<Vuelo> vuelos, int pasajeros, String partida, String destino) {
         if(pasajeros>30){
             pasajeros=30;
+        }
+        System.out.println("DETALLES FINALES DE SU(S) VUELO(S)");
+        double totalFinal=0;
+        for(Vuelo v: vuelos){
+            double precioBase=v.getPrecio();
+            
+            boolean vueloDirecto=esDirecto(partida,destino);
+            double precioFinal=recargo(precioBase,vueloDirecto,v);
+            
+            System.out.println("Tramo del vuelo: "+v.getPartida()+" -> "+v.getDestino());
+            System.out.println("Código de vuelo: "+v.getCodigo_vuelo());
+            System.out.println("Duración estimada de vuelo: "+v.getDuracion()+"hs");
+            if(vueloDirecto){
+                System.out.println("Se aplica un recargo de $"+(precioBase*0.20)+" (20%) por vuelo directo.");
+            }
+            if(v.calcularOcupacion()>=95){
+                System.out.println("Se aplica un recargo de $"+(precioBase*0.10+" (10%) por la ocupación del vuelo."));
+            }
+            System.out.println("Precio final del vuelo: $"+precioFinal);
+            totalFinal=totalFinal+precioFinal;
+            System.out.println("Asientos asignados en este vuelo: ");
+            for(String asiento: v.getAsientosAsignados()){
+                System.out.println(""+asiento);
+            }
+            System.out.println();
+        }
+        
+        System.out.println("PRECIO FINAL POR PERSONA: "+totalFinal);
+        System.out.println("TOTAL FINAL POR "+pasajeros+" PASAJEROS: $"+(totalFinal*pasajeros));
+        /*if (pasajeros > 30) {
+            pasajeros = 30;
         }
         System.out.println("Detalles finales del vuelo: ");
         //Calcular costo base del vuelo
@@ -198,7 +260,7 @@ public class ServicioRutas {
         double precioFinal = recargo(precioBase, vueloDirecto, vuelo);
 
         //mostrar informacion
-        System.out.println("Código de vuelo: "+codigoVuelo);
+        System.out.println("Código de vuelo: " + codigoVuelo);
         System.out.println("Ciudad de partida: " + partida);
         System.out.println("Ciudad de destino: " + destino);
         System.out.println("Tiempo estimado de su vuelo: " + tiempoEstimado + " hs");
@@ -212,9 +274,39 @@ public class ServicioRutas {
         if (vuelo.calcularOcupacion() >= 95) {
             System.out.println("El vuelo está ocupado a más del 95%. Se aplica un recargo de: $" + precioBase * 0.10);
         }
-        System.out.println("Precio final de su vuelo: $" + precioFinal +" por persona.");
-        System.out.println("El precio final por "+pasajeros+" pasajeros es: $"+precioFinal*pasajeros);
+        System.out.println("Precio final de su vuelo: $" + precioFinal + " por persona.");
+        System.out.println("El precio final por " + pasajeros + " pasajeros es: $" + precioFinal * pasajeros);
+*/
         
+    }
+
+    public double obtenerCostoTramo(String origen, String destino) {
+        Vertice v = grafoCosto.getVertice(origen);
+        if (v == null) {
+            return -1;
+        }
+
+        for (Arista a : v.adj) {
+            if (a.dest.name.equals(destino)) {
+                return a.cost;
+            }
+        }
+
+        return -1; // no existe esa conexión directa
+    }
+
+    public double obtenerDuracionTramo(String origen, String destino) {
+        Vertice v = grafoTiempo.getVertice(origen);
+        if (v == null) {
+            return -1;
+        }
+
+        for (Arista a : v.adj) {
+            if (a.dest.name.equals(destino)) {
+                return a.cost;
+            }
+        }
+        return -1;
     }
 
 }
