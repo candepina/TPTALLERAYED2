@@ -106,28 +106,28 @@ public class SistemaDeVuelos {
         Grafo grafoTiempo = new Grafo();
         //grafo para probar aeropuertos
 
-        grafoCosto.agregarArista("BSAS", "CORDOBA", 120);
-        grafoCosto.agregarArista("BSAS", "MENDOZA", 150);
-        grafoCosto.agregarArista("BSAS", "BARILOCHE", 220);
-        grafoCosto.agregarArista("BSAS", "SANTA FE", 100);
-        grafoCosto.agregarArista("BSAS", "POSADAS", 140);
+        grafoCosto.agregarArista("BSAS", "CORDOBA", 120000);
+        grafoCosto.agregarArista("BSAS", "MENDOZA", 150000);
+        grafoCosto.agregarArista("BSAS", "BARILOCHE", 220000);
+        grafoCosto.agregarArista("BSAS", "SANTA FE", 100000);
+        grafoCosto.agregarArista("BSAS", "POSADAS", 140000);
 
-        grafoCosto.agregarArista("CORDOBA", "MENDOZA", 90);
-        grafoCosto.agregarArista("MENDOZA", "CORDOBA", 90);
-        grafoCosto.agregarArista("CORDOBA", "SANTA FE", 70);
-        grafoCosto.agregarArista("SANTA FE", "CORDOBA", 70);
+        grafoCosto.agregarArista("CORDOBA", "MENDOZA", 90000);
+        grafoCosto.agregarArista("MENDOZA", "CORDOBA", 90000);
+        grafoCosto.agregarArista("CORDOBA", "SANTA FE", 70000);
+        grafoCosto.agregarArista("SANTA FE", "CORDOBA", 70000);
 
-        grafoCosto.agregarArista("MENDOZA", "BARILOCHE", 120);
-        grafoCosto.agregarArista("BARILOCHE", "MENDOZA", 120);
+        grafoCosto.agregarArista("MENDOZA", "BARILOCHE", 120000);
+        grafoCosto.agregarArista("BARILOCHE", "MENDOZA", 120000);
 
-        grafoCosto.agregarArista("BARILOCHE", "SANTA CRUZ", 160);
-        grafoCosto.agregarArista("SANTA CRUZ", "BARILOCHE", 160);
+        grafoCosto.agregarArista("BARILOCHE", "SANTA CRUZ", 160000);
+        grafoCosto.agregarArista("SANTA CRUZ", "BARILOCHE", 160000);
 
-        grafoCosto.agregarArista("MENDOZA", "SANTA CRUZ", 170);
-        grafoCosto.agregarArista("SANTA CRUZ", "MENDOZA", 170);
+        grafoCosto.agregarArista("MENDOZA", "SANTA CRUZ", 170000);
+        grafoCosto.agregarArista("SANTA CRUZ", "MENDOZA", 170000);
 
-        grafoCosto.agregarArista("SANTA FE", "POSADAS", 80);
-        grafoCosto.agregarArista("POSADAS", "SANTA FE", 80);
+        grafoCosto.agregarArista("SANTA FE", "POSADAS", 80000);
+        grafoCosto.agregarArista("POSADAS", "SANTA FE", 80000);
 
         //double precio = grafoAeropuertoCosto.mostrarResultadoDijkstraParticularCosto(partida, destino);
         //System.out.println("El precio base del vuelo es: $" + precio);
