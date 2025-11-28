@@ -1,7 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Clase principal del sistema. Se encarga de interactuar con el usuario,
+ * cargar los grafos de rutas (costos y tiempos), ejecutar Dijkstra,
+ * construir los vuelos correspondientes, gestionar reservas, y mostrar
+ * resultados parciales y finales.
+ *
+ * Contiene el menú completo, la lógica de entrada del usuario y la
+ * prueba de funcionalidades como búsqueda y eliminación de asientos
+ * en el árbol AVL.
  */
 package sistemadevuelos;
 
@@ -18,32 +23,35 @@ import servicios.ServicioRutas;
  */
 public class SistemaDeVuelos {
 
-    /**
-     * @param args the command line arguments
-     */
+/**
+ * Método principal del sistema de vuelos.
+ * 
+ * Flujo general:
+ * 1. Solicita al usuario ciudad de origen y destino.
+ * 2. Construye los grafos de costo y tiempo entre las ciudades.
+ * 3. Ejecuta Dijkstra para obtener caminos mínimos.
+ * 4. Construye los objetos Vuelo para cada tramo del camino.
+ * 5. Muestra los detalles parciales del vuelo.
+ * 6. Pregunta si el usuario desea confirmar la reserva.
+ * 7. Si confirma:
+ *      - Reserva asientos para todos los pasajeros.
+ *      - Muestra asientos reservados y ocupación.
+ *      - Muestra detalles finales con recargos.
+ * 8. Realiza pruebas de búsqueda / eliminación de asientos.
+ * 9. Ejecuta BFS y DFS como demostración sobre el grafo.
+ *
+ *
+ */
     public static void main(String[] args) {
-
-        /*Vuelo vuelo = new Vuelo();
-
-        for (int i = 0; i < 30; i++) {
-            try {
-                String asiento = vuelo.reservar();
-                System.out.println("Asiento asignado: " + asiento);
-            } catch (Exception e) {
-                System.out.println("Error al reservar asiento: " + e.getMessage());
-            }
-        }
-        System.out.println("Ocupación final: ");
-        System.out.println("Sección A: " + vuelo.ocupacion_seccion_A);
-        System.out.println("Sección B: " + vuelo.ocupacion_seccion_B);
-        System.out.println("Sección C: " + vuelo.ocupacion_seccion_C);
-
-        System.out.println("Reservas: ");
-        vuelo.reservas.imprimirIn();
-         */
         String partida;
         String destino;
         Scanner entrada = new Scanner(System.in);
+        //Entrada y validación de ciudad de partida
+        /**
+         * Solicita la ciudad de partida al usuario y la normaliza a mayúsculas.
+         * Solo permite ciudades cargadas en el sistema.
+         */
+
         System.out.println("Ingrese ciudad de partida");
         System.out.println("Opciones:\n * BSAS\n * Cordoba\n * Mendoza\n * Bariloche\n * Santa Fe\n * Posadas\n * Santa Cruz");
         partida = entrada.nextLine().toUpperCase();
@@ -104,8 +112,12 @@ public class SistemaDeVuelos {
 
         Grafo grafoCosto = new Grafo();
         Grafo grafoTiempo = new Grafo();
-        //grafo para probar aeropuertos
 
+        //Inicialización del grafo de costos
+        /**
+         * Carga en el grafo los costos directos entre ciudades disponibles. El
+         * grafo es dirigido: cada arista representa un vuelo directo.
+         */
         grafoCosto.agregarArista("BSAS", "CORDOBA", 120000);
         grafoCosto.agregarArista("BSAS", "MENDOZA", 150000);
         grafoCosto.agregarArista("BSAS", "BARILOCHE", 220000);
@@ -129,11 +141,11 @@ public class SistemaDeVuelos {
         grafoCosto.agregarArista("SANTA FE", "POSADAS", 80000);
         grafoCosto.agregarArista("POSADAS", "SANTA FE", 80000);
 
-        //double precio = grafoAeropuertoCosto.mostrarResultadoDijkstraParticularCosto(partida, destino);
-        //System.out.println("El precio base del vuelo es: $" + precio);
-        // boolean vueloDirecto = grafoAeropuertoCosto.esDirecto(partida, destino);
-        //double precioFinal = grafoAeropuertoCosto.recargo(precio, vueloDirecto);
-        //System.out.println("El precio final del vuelo es: $" + precioFinal);
+        //Inicialización del grafo de tiempos
+        /**
+         * Carga en el grafo las duraciones estimadas de vuelo entre ciudades.
+         * Las aristas son mayormente bidireccionales.
+         */
         grafoTiempo.agregarArista("BSAS", "CORDOBA", 1.2);
         grafoTiempo.agregarArista("BSAS", "MENDOZA", 1.7);
         grafoTiempo.agregarArista("BSAS", "BARILOCHE", 2.2);
@@ -157,27 +169,29 @@ public class SistemaDeVuelos {
         grafoTiempo.agregarArista("SANTA FE", "POSADAS", 1.2);
         grafoTiempo.agregarArista("POSADAS", "SANTA FE", 1.2);
 
-        //grafoAeropuertoTiempo.mostrarResultadoDijkstraParticularTiempo(partida, destino);
+        //Ejecución del algoritmo de Dijkstra para costo y tiempo
+        /**
+         * Ejecuta Dijkstra desde la ciudad de partida para: obtener todos los
+         * costos mínimos, obtener todas las duraciones mínimas. Luego muestra
+         * los resultados al usuario.
+         */
         ServicioRutas servicio = new ServicioRutas(grafoCosto, grafoTiempo);
+
         grafoCosto.dijkstra(partida);
-        //System.out.println("DEBUG - grafoCosto.dist Bariloche = " + grafoCosto.getVertice("Bariloche").dist);
         grafoTiempo.dijkstra(partida);
-        //System.out.println("DEBUG - grafoTiempo.dist Bariloche = " + grafoTiempo.getVertice("Bariloche").dist);
+
         System.out.println("\n DIJKSTRA COSTO ");
         servicio.mostrarResultadoDijkstraCosto(partida);
 
         System.out.println("\nDIJKSTRA TIEMPO ");
         servicio.mostrarResultadoDijkstraTiempo(partida);
 
-        //Vuelo vuelo = null;
-        // boolean resultado = ServicioRutas.esDirecto(partida, destino);
-        // if (resultado == true) {
-        //vuelo = new Vuelo();
-        //vuelo.setPartida(partida);
-        //vuelo.setDestino(destino);
-        //System.out.println(vuelo.partida);
-        //System.out.println(vuelo.destino);
-        // } else {
+        //Construcción de vuelos para cada tramo del camino mínimo
+        /**
+         * A partir del camino generado con Dijkstra, se crean objetos Vuelo
+         * para cada tramo directo del recorrido, asignando costo, duración,
+         * código de vuelo y ciudades correspondientes.
+         */
         ArrayList<String> camino = servicio.obtenerCamino(partida, destino);
         System.out.println(camino);
         ArrayList<Vuelo> vuelosTramo = new ArrayList<>();
@@ -195,10 +209,16 @@ public class SistemaDeVuelos {
             v.setDuracion(duracionTramo);
             vuelosTramo.add(v);
 
-            //System.out.println("Vuelo creado para tramo: " + origenTramo + " → " + destinoTramo);
         }
         System.out.println(vuelosTramo.toString() + "\n"); //para debug
         servicio.mostrarDetallesParcial(vuelosTramo);
+
+        //Confirmación de la reserva
+        /**
+         * Pregunta al usuario si desea realizar la reserva. Según la cantidad
+         * de pasajeros: - asigna asientos automáticamente - calcula ocupación
+         * por sección - almacena los asientos en el AVL de cada vuelo
+         */
         System.out.println("¿Desea seguir con la reserva? (Si/No)");
         String confirmacion = entrada.nextLine().toUpperCase();
 
@@ -237,6 +257,11 @@ public class SistemaDeVuelos {
 
         }
 
+        //Prueba de búsqueda de asientos
+        /**
+         * Verifica si el asiento "A2" está reservado en cada tramo del vuelo
+         * utilizando búsqueda en el árbol AVL.
+         */
         System.out.println("\nPRUEBA DE BÚSQUEDA DE ASIENTOS: ");
 
         for (Vuelo tramo : vuelosTramo) {
@@ -250,6 +275,11 @@ public class SistemaDeVuelos {
 
         }
 
+        //Prueba de eliminación de asientos
+        /**
+         * Intenta eliminar el asiento "A2" del árbol AVL de cada vuelo,
+         * demostrando el funcionamiento del método eliminar().
+         */
         System.out.println("\nPRUEBA DE ELIMINACIÓN DE ASIENTOS: ");
         for (Vuelo tramo : vuelosTramo) {
             Nodo existe_eliminar = tramo.reservas.buscar("A2");
@@ -265,6 +295,11 @@ public class SistemaDeVuelos {
 
         }
 
+        //Prueba de eliminación de asientos
+        /**
+         * Intenta eliminar el asiento "A2" del árbol AVL de cada vuelo,
+         * demostrando el funcionamiento del método eliminar().
+         */
         System.out.println("\nPRUEBA DFS: ");
         grafoCosto.DFS(partida);
 
@@ -272,71 +307,3 @@ public class SistemaDeVuelos {
         grafoCosto.BFS(partida);
     }
 }
-/*System.out.println("\nDETALLES DEL VUELO");
-            servicio.mostrarDetallesParcial(partida, destino);
-
-            System.out.println("¿Desea seguir con la reserva? (Si/No)");
-            String confirmacion = entrada.nextLine();
-
-            switch (confirmacion) {
-                case "Si":
-
-                    //int codigo_vuelo = vuelo.asignarCodigoVuelo();
-                    System.out.println("Ingrese la cantidad de pasajeros: ");
-                    int cantidad_pasajeros = entrada.nextInt();
-
-                    for (int i = 0; i < cantidad_pasajeros; i++) {
-                        try {
-                            String asiento = vuelo.reservar();
-                            System.out.println("Asiento asignado: " + asiento);
-                        } catch (Exception e) {
-                            System.out.println("Error al reservar asiento: " + e.getMessage());
-                        }
-                    }
-                    System.out.println("Ocupación final: ");
-                    System.out.println("Sección A: " + vuelo.ocupacion_seccion_A);
-                    System.out.println("Sección B: " + vuelo.ocupacion_seccion_B);
-                    System.out.println("Sección C: " + vuelo.ocupacion_seccion_C);
-
-                    System.out.println("Los asientos asignados son: ");
-                    vuelo.reservas.imprimirIn();
-                    servicio.mostrarDetallesFinal(partida, destino, vuelo, cantidad_pasajeros, codigo_vuelo);
-
-                    break;
-                case "No":
-                    System.out.println("Reserva cancelada.");
-                    break;
-            }
-
-            System.out.println("\nPrueba de búsqueda. Inserte asiento a buscar: ");
-            String asiento_buscar = entrada.next();
-            Nodo existe_buscar = vuelo.reservas.buscar(asiento_buscar);
-            if (existe_buscar != null) {
-                System.out.println("El asiento se encontró reservado.");
-                System.out.println(existe_buscar);
-            } else {
-                System.out.println("El asiento no se encontró reservado.");
-            }
-
-            System.out.println("\nPrueba de eliminación. Indicar asiento a eliminar: ");
-            String asiento_eliminar = entrada.next();
-
-            Nodo existe_eliminar = vuelo.reservas.buscar(asiento_eliminar);
-            if (existe_eliminar != null) {
-                vuelo.reservas.eliminar(asiento_eliminar);
-                System.out.println("Asiento " + asiento_eliminar + " eliminado correctamente.");
-            } else {
-                System.out.println("El asiento " + asiento_eliminar + " no se encontró reservado. No se puede eliminar.");
-            }
-            System.out.println("\nDisposición de asientos en el vuelo: ");
-            vuelo.reservas.imprimirIn();
-
-            System.out.println("\nPrueba de DFS: ");
-            grafoCosto.DFS(partida);
-
-            System.out.println("\nPrueba de BFS:");
-            grafoCosto.BFS(partida);
-        }*/
-                
-        
-//}

@@ -1,7 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Representa un vuelo individual dentro del sistema.
+ *
+ * Un vuelo contiene:
+ * - código identificatorio,
+ * - ciudad de partida y destino,
+ * - precio y duración del tramo,
+ * - asignación de asientos divididos en 3 secciones (A, B y C),
+ * - registro de asientos reservados mediante un árbol AVL.
+ *
+ * La distribución de asientos intenta balancear la ocupación entre secciones.
+ * Cada vuelo tiene una capacidad máxima de 30 asientos.
  */
 package modelo;
 
@@ -26,13 +34,23 @@ public class Vuelo {
     public List<String> asientos_disponibles_A = new ArrayList<>(Arrays.asList("A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"));
     public List<String> asientos_disponibles_B = new ArrayList<>(Arrays.asList("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"));
     public List<String> asientos_disponibles_C = new ArrayList<>(Arrays.asList("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"));
-    public ArbolAVL reservas = new ArbolAVL(); //creamos el árbol AVL reservas con los códigos de asiento
+    public ArbolAVL reservas = new ArbolAVL(); //creamos el árbol AVL reservas con los códigos de asiento. arantiza búsqueda, inserción y eliminación O(log n).
     Random random = new Random();
 
+     /**
+     * Agrega un asiento asignado al registro local del vuelo.
+     *
+     * @param asiento código del asiento asignado
+     */
     public void agregarAsiento(String asiento) {
         asientosAsignados.add(asiento);
     }
-
+    
+     /**
+     * Devuelve la lista de asientos asignados en el vuelo.
+     *
+     * @return una lista con los códigos de asiento ya reservados
+     */
     public ArrayList<String> getAsientosAsignados() {
         return asientosAsignados;
     }
@@ -77,6 +95,18 @@ public class Vuelo {
         return destino;
     }
 
+    
+     /**
+     * Asigna un asiento de manera equilibrada entre secciones A, B y C.
+     *
+     * Selecciona siempre la sección con menor ocupación.
+     * Si varias secciones tienen la misma ocupación mínima, elige una al azar.
+     *
+     * Inserta el asiento en el árbol AVL de reservas.
+     *
+     * @return código del asiento asignado
+     * @throws Exception si no quedan asientos disponibles en ninguna sección
+     */
     public String reservar() throws Exception {
         int minimo = Math.min(ocupacion_seccion_A, Math.min(ocupacion_seccion_B, ocupacion_seccion_C));
         List<Character> seccionesPosibles = new ArrayList<>();
@@ -112,11 +142,16 @@ public class Vuelo {
                 ocupacion_seccion_C++;
                 break;
         }
-        reservas.insertar(asiento);
+        reservas.insertar(asiento); // se almacena en AVL
         System.out.println("Porcentaje de ocupación: " + calcularOcupacion() + "%");
         return asiento;
     }
 
+    /**
+     * Calcula el porcentaje total de ocupación del vuelo.
+     *
+     * @return porcentaje (0 a 100)
+     */
     public double calcularOcupacion() {
         final int CAPACIDAD_TOTAL = 30;
         int ocupacion_total = ocupacion_seccion_A + ocupacion_seccion_B + ocupacion_seccion_C;
@@ -124,12 +159,21 @@ public class Vuelo {
         return porcentaje_ocupacion;
     }
 
+    /**
+     * Genera un código de vuelo aleatorio entre 0 y 99999.
+     *
+     * @return código asignado
+     */
     public int asignarCodigoVuelo() {
         Random codigo = new Random();
         codigo_vuelo = codigo.nextInt(100000);
         return codigo_vuelo;
     }
 
+    
+    /**
+     * Muestra una representación textual del vuelo.
+     */
     @Override
     public String toString() {
         return "Vuelo"
@@ -138,7 +182,7 @@ public class Vuelo {
                 + ", destino ='" + destino + '\''
                 + ", precio =" + precio + '\''
                 + ", duración =" + duracion
-                + +'}';
+                ;
     }
 
 }

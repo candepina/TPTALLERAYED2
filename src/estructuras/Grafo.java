@@ -1,7 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Representa un grafo dirigido con pesos, utilizado para modelar rutas
+ * en el sistema de vuelos (por ejemplo, distancias o tiempos).
+ *
+ * El grafo almacena sus vértices en un mapa (diccionario) y cada vértice
+ * contiene una lista de adyacencia con sus aristas.
+ *
+ * Este grafo permite realizar recorridos DFS, BFS y calcular caminos mínimos
+ * utilizando el algoritmo de Dijkstra.
+ *
+ * Estructuras principales:
+ * - Vertice: nodo del grafo, con nombre, distancia mínima, predecesor y adyacentes.
+ * - Arista: conexión dirigida entre dos vértices con un costo asociado.
  */
 package estructuras;
 
@@ -13,17 +22,31 @@ import java.util.*;
  */
 public class Grafo {
 
-    public static final double INFINITY = Double.MAX_VALUE;
+    public static final double INFINITY = Double.MAX_VALUE; //valor infinito utilizado para inicializar distancias
     private Map<String, Vertice> VerticeMap = new HashMap<String, Vertice>();
-    //agrega una nueva arista al grafo
 
+    /**
+     * Agrega una arista dirigida desde un vértice origen hacia un vértice
+     * destino.
+     *
+     *
+     * @param nomOrigen nombre del vértice origen
+     * @param nomDestino nombre del vértice destino
+     * @param cost peso o costo de la arista
+     */
     public void agregarArista(String nomOrigen, String nomDestino, double cost) {
         Vertice v = getVertice(nomOrigen);
         Vertice w = getVertice(nomDestino);
         v.adj.add(new Arista(w, cost));
     }
 
-    //si el nombre del vértice no existe, lo agrega al mapa. En caso contrario, retorna el vértice existente
+    /**
+     * Obtiene un vértice por nombre. Si no existe, lo crea y lo inserta en el
+     * mapa.
+     *
+     * @param VerticeName nombre del vértice
+     * @return el vértice correspondiente
+     */
     public Vertice getVertice(String VerticeName) {
         Vertice v = VerticeMap.get(VerticeName);
         if (v == null) {
@@ -32,15 +55,26 @@ public class Grafo {
         }
         return v;
     }
-    //métodos para bfs, dfs, dijkstra
 
+    //MÉTODOS PARA DFS, BFS, DIJKSTRA
+    /**
+     * Restablece todos los vértices del grafo para dejar sus distancias en
+     * infinito y su predecesor en null.
+     *
+     * Es obligatorio llamarlo antes de usar BFS, DFS o Dijkstra.
+     */
     public void clearAll() {
         for (Vertice v : VerticeMap.values()) {
             v.reset();
         }
     }
-    //método DFS (profundidad)
 
+    //método DFS (profundidad)
+    /**
+     * Ejecuta un recorrido en profundidad (DFS) desde un vértice origen.
+     *
+     * @param origen nombre del vértice de inicio.
+     */
     public void DFS(String origen) {
         clearAll();
         System.out.println("Recorrido DFS desde " + origen + ":");
@@ -48,7 +82,12 @@ public class Grafo {
         System.out.println();
     }
 
-    public void DFS_Visita(String startName) {
+    /**
+     * Procedimiento recursivo de DFS.
+     *
+     * @param startName nombre del vértice a explorar.
+     */
+    private void DFS_Visita(String startName) {
         Vertice v = VerticeMap.get(startName);
         if (v.dist == INFINITY) { //todos los nodos tienen dist=infinity al principio, y no están descubiertos. Si su distancia es 0, son DESCUBIERTOS
             v.dist = 0; // empieza marcando como descubierto al nodo inicial
@@ -65,6 +104,11 @@ public class Grafo {
     }
 
     //método BFS (anchura)
+    /**
+     * Ejecuta un recorrido en anchura (BFS) desde un vértice origen.
+     *
+     * @param origen vértice inicial
+     */
     public void BFS(String origen) {
         clearAll();
         System.out.println("Recorrido BFS desde " + origen + ":");
@@ -73,6 +117,11 @@ public class Grafo {
     }
 
     //método BFS (anchura)
+    /**
+     * Procedimiento de BFS utilizando una cola para explorar los niveles.
+     *
+     * @param startName nombre del vértice origen
+     */
     private void BFS_Visita(String startName) {
         clearAll(); // Paso 1: marcamos todos los nodos como NO visitados (dist = INFINITY)
 
@@ -96,6 +145,12 @@ public class Grafo {
         }
     }
 
+    /**
+     * Ejecuta el algoritmo de Dijkstra para calcular la distancia mínima desde
+     * un nodo origen hasta todos los demás.
+     *
+     * @param startName nombre del vértice inicio del cálculo
+     */
     public void dijkstra(String startName) {
         clearAll(); //resetea todos los vértices antes de empezar. pone dist = infinito, prev=null
         Vertice start = VerticeMap.get(startName); //VerticeMap es un diccionario que guarda todos los vértices del grafo, indexados por nombre ("Q", "W", etc).
@@ -118,7 +173,7 @@ public class Grafo {
         }
     }
 
-    public void imprimirGrafo() {
+    /*public void imprimirGrafo() {
         for (Vertice v : VerticeMap.values()) {
             System.out.print(v.name + " -> ");
             for (Arista a : v.adj) {
@@ -126,11 +181,15 @@ public class Grafo {
             }
             System.out.println();
         }
-    }
+    }*/
 
+    /**
+     * Retorna la colección completa de vértices del grafo.
+     *
+     * @return colección de vértices
+     */
     public Collection<Vertice> getVertices() {
         return VerticeMap.values();
     }
-    
 
 }
