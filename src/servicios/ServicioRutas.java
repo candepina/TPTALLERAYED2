@@ -153,7 +153,7 @@ public class ServicioRutas {
         ArrayList<String> camino = new ArrayList<>();
 
         // Buscamos el vértice destino en el grafo
-        Vertice v = grafoCosto.getVertice(destino);
+        Vertice v = grafoTiempo.getVertice(destino);
 
         // Si no existe o no tiene camino, devolvemos lista vacía
         if (v == null || v.dist == INFINITY) {
